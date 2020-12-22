@@ -1,5 +1,3 @@
-import cli from "./instance";
-
 /**
  * @see ./cli-spinners.json.js
  */
@@ -19,7 +17,8 @@ const spinners = {
     none: {},
 };
 
-const { frames, interval } = spinners[cli.values.spinner];
+// TODO
+const { frames, interval } = spinners.earth;
 
 const CLEAR_LINE = "\r\x1b[K";
 

@@ -5,12 +5,16 @@ import deleteGateway from "./deleteGateway";
 import deleteLogs from "./deleteLogs";
 import deleteFunction from "./lambda/deleteFunction";
 import { getState, validateFunctionName } from "../state";
+import { setRegion } from "../services";
 import { guarded, pathFromWorkDir } from "../util";
 import withSpinner from "../cli/withSpinner";
-import cli from "../cli/instance";
 
-export default async () => {
-    const { functionName, shouldDeleteLogs } = cli.values;
+export default async ({
+    name: functionName,
+    deleteLogs: shouldDeleteLogs,
+    region,
+}) => {
+    setRegion(region);
 
     await validateFunctionName(functionName);
 
@@ -36,10 +40,10 @@ export default async () => {
 
     if (shouldDeleteLogs) {
         await withSpinner(
-            "Deleting CloudWatch logs, --logs flag passed",
+            "Deleting CloudWatch logs, --deleteLogs flag passed",
             () => guarded(() => deleteLogs(functionName)),
             ({ logGroupName }) =>
-                `Deleted log group ${logGroupName}, --logs flag passed`
+                `Deleted log group ${logGroupName}, --deleteLogs flag passed`
         );
     }
 

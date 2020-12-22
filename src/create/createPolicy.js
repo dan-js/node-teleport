@@ -4,7 +4,7 @@ import { save } from "../state";
 import rolePolicy from "./lambda-role-policy.json";
 
 export default async (policyName) => {
-    const { Policy: policy } = await iam
+    const { Policy: policy } = await iam()
         .createPolicy({
             PolicyName: policyName,
             PolicyDocument: JSON.stringify(rolePolicy),

@@ -9,17 +9,29 @@ import {
     zipFolder,
 } from "../util";
 import { getState, validateFunctionName } from "../state";
+import { setRegion } from "../services";
 import withSpinner from "../cli/withSpinner";
-import cli from "../cli/instance";
+
+// :(
+const emptyPromise = () => Promise.resolve();
 
 const zipWorkDir = pathFromWorkDir("./to-zip");
 
-mkdirIfNotExists(zipWorkDir);
+const createWorkDir = () => {
+    mkdirIfNotExists(zipWorkDir);
+};
 
-export default async () => {
-    const { functionName, updateFrom } = cli.values;
+export default async ({
+    name: functionName,
+    from: updateFrom,
+    noDeps,
+    region,
+}) => {
+    setRegion(region);
 
     await validateFunctionName(functionName);
+
+    createWorkDir();
 
     const updateFromAbsolute =
         updateFrom.charAt(0) === "/"
@@ -32,11 +44,18 @@ export default async () => {
         () => `Copied from ${updateFrom}`
     );
 
-    await withSpinner(
-        "Adding production dependencies",
-        () => Promise.resolve(installProductionModules(zipWorkDir)),
-        () => "Installed production dependencies"
-    );
+    if (noDeps) {
+        await withSpinner(
+            "Skipped bundling of production dependencies",
+            emptyPromise
+        );
+    } else {
+        await withSpinner(
+            "Adding production dependencies",
+            () => Promise.resolve(installProductionModules(zipWorkDir)),
+            () => "Installed production dependencies"
+        );
+    }
 
     const zipPath = pathFromWorkDir("zipped.zip");
 
@@ -48,7 +67,8 @@ export default async () => {
 
     await withSpinner(
         "Updating lambda",
-        () => updateFunctionCode({ functionName, zipPath }),
+        () =>
+            updateFunctionCode({ functionName, zipPath }).catch(console.error),
         (result) => `Updated lambda! New code SHA: ${result.lambdaSha}`
     );
 

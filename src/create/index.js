@@ -12,14 +12,14 @@ import createDeployment from "./createDeployment";
 import addPermission from "./lambda/addPermission";
 import { sleep, getJson } from "../util";
 import { save, validateFunctionName } from "../state";
+import { setRegion } from "../services";
 import withSpinner from "../cli/withSpinner";
 import { booleanQuestion } from "../cli/input";
-import cli from "../cli/instance";
 
-export default async () => {
+export default async ({ language, name: functionName, region }) => {
+    setRegion(region);
+
     registerRollback();
-
-    const { functionName } = cli.values;
 
     await validateFunctionName(functionName);
 
@@ -71,19 +71,18 @@ export default async () => {
         () => `Added gateway ANY method for proxy resource`
     );
 
-    if (!process.env.ROLLING_BACK) {
-        throw new Error("NOPE");
-    }
-
     await withSpinner("Waiting for a few seconds", () => sleep(3000));
 
     const { functionArn } = await withSpinner(
         `Creating base lambda function`,
         () =>
-            createFunction({
-                functionName,
-                roleArn,
-            }),
+            createFunction(
+                {
+                    functionName,
+                    roleArn,
+                },
+                language
+            ),
         (result) => `Created function with arn ${result.functionArn}`
     );
 

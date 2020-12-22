@@ -1,7 +1,7 @@
 import { gateway } from "../services";
 
 export default async ({ restApiId, resourceId, functionArn }) => {
-    return gateway
+    return gateway()
         .putIntegration({
             restApiId,
             resourceId,

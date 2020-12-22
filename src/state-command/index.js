@@ -1,14 +1,12 @@
 import { getState } from "../state";
-import cli from "../cli/instance";
 
-export default async () => {
-    const { stateItem } = cli.values;
+export default async ({ item }) => {
     const state = getState() ?? {};
 
-    if (!stateItem) {
+    if (!item) {
         process.stdout.write(`${JSON.stringify(state, null, 2)}\n`);
     } else {
-        process.stdout.write(state[stateItem]);
+        process.stdout.write(`${state[item]}\n`);
     }
 
     process.exit();

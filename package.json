@@ -1,21 +1,23 @@
 {
-  "name": "@nuuji/lambda-api",
+  "name": "node-teleport",
   "version": "1.0.0",
   "main": "src/index.js",
   "license": "MIT",
   "bin": {
-    "lambda-api": "./lib/index.js"
+    "teleport": "./lib/index.js",
+    "tpt": "./lib/index.js"
   },
   "scripts": {
     "build": "rollup -c"
   },
   "dependencies": {
-    "archiver": "^4.0.1",
-    "rimraf": "^3.0.2"
+    "archiver": "^5.1.0",
+    "rimraf": "^3.0.2",
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "@nuuji/config": "^0.2.4",
-    "aws-sdk": "^2.706.0"
+    "@nuuji/config": "^0.3.4",
+    "aws-sdk": "^2.816.0"
   },
   "peerDependencies": {
     "aws-sdk": ">2.0.0"

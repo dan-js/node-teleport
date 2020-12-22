@@ -9,9 +9,11 @@ import { booleanQuestion } from "./cli/input";
 
 const stateFile = pathFromWorkDir(".nla-state.json");
 
-if (!existsSync(stateFile)) {
-    writeJsonSync(stateFile, {});
-}
+export const createStateFileIfNeeded = () => {
+    if (!existsSync(stateFile)) {
+        writeJsonSync(stateFile, {});
+    }
+};
 
 export const getState = () => readJsonSync(stateFile);
 

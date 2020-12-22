@@ -1,7 +1,7 @@
 import { lambda } from "../../services";
 
 export default async ({ functionName }) =>
-    lambda
+    lambda()
         .addPermission({
             FunctionName: functionName,
             Action: "lambda:InvokeFunction",
